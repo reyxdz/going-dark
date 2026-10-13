@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "going-dark",
+  "description": "One strict way to run a software project with Claude Code: issues, handoff prompts, audits and the flow between them",
+  "owner": {
+    "name": "reyxdz"
+  },
+  "plugins": [
+    {
+      "name": "go-dark",
+      "description": "Write issues, handoff prompts and audits to one strict standard, follow one flow from issue to release, and give every project its full context",
+      "source": "./plugins/go-dark",
+      "category": "productivity"
+    }
+  ]
+}

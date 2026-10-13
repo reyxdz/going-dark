@@ -1,0 +1,9 @@
+{
+  "name": "go-dark",
+  "description": "Write issues, handoff prompts and audits to one strict standard, follow one flow from issue to release, and give every project its full context",
+  "version": "0.1.0",
+  "author": {
+    "name": "reyxdz"
+  },
+  "keywords": ["issues", "handoff", "audit", "pull-request", "workflow", "project-context"]
+}
