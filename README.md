@@ -1,4 +1,4 @@
-# going-dark
+# Going Dark
 
 A Claude Code plugin for running a software project one strict way: issues
 written as specifications, handoff prompts any agent can follow, audits that
