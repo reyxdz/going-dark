@@ -10,9 +10,14 @@ permissions:
 
 jobs:
   check:
-    runs-on: ubuntu-latest
+    name: ${{ matrix.os }} / Node ${{ matrix.node }}
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
+        # Paths, line endings and home folders differ by operating system, and
+        # the installer writes to all three kinds.
+        os: [ubuntu-latest, windows-latest, macos-latest]
         node: [20, 24]
     steps:
       - uses: actions/checkout@v4

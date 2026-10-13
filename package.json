@@ -1,6 +1,6 @@
 {
   "name": "going-dark",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Install the going-dark method — issues, handoff prompts, audits and one flow from issue to release — into any AI coding agent",
   "type": "module",
   "bin": {
@@ -23,7 +23,17 @@
     "type": "git",
     "url": "git+https://github.com/reyxdz/going-dark.git"
   },
-  "keywords": ["ai-agents", "agent-skills", "agents-md", "claude-code", "codex", "gemini-cli", "copilot", "cursor", "workflow"],
+  "keywords": [
+    "ai-agents",
+    "agent-skills",
+    "agents-md",
+    "claude-code",
+    "codex",
+    "gemini-cli",
+    "copilot",
+    "cursor",
+    "workflow"
+  ],
   "author": "reyxdz",
   "license": "MIT"
 }

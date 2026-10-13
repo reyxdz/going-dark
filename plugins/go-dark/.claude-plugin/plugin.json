@@ -1,9 +1,21 @@
 {
   "name": "go-dark",
   "description": "Write issues, handoff prompts and audits to one strict standard, follow one flow from issue to release, and give every project its full context",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": {
     "name": "reyxdz"
   },
-  "keywords": ["issues", "handoff", "audit", "pull-request", "workflow", "project-context"]
+  "license": "MIT",
+  "homepage": "https://github.com/reyxdz/going-dark",
+  "repository": "https://github.com/reyxdz/going-dark",
+  "documentationUrl": "https://github.com/reyxdz/going-dark/tree/main/docs",
+  "supportUrl": "https://github.com/reyxdz/going-dark/issues",
+  "keywords": [
+    "issues",
+    "handoff",
+    "audit",
+    "pull-request",
+    "workflow",
+    "project-context"
+  ]
 }
