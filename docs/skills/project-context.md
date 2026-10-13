@@ -1,24 +1,26 @@
 # `/go-dark:project-context`
 
+> **Claude Code:** `/go-dark:project-context` · **Other agents:** the `go-dark-project-context` skill — ask for it by what you want, or by name.
+
 Sets up — or refreshes — everything an agent must **know**, **understand** and
 **never do** in a project, so every session starts from the same ground.
 
 ## When it runs
 
 - `/go-dark:project-context` in a project for the first time.
-- A project has no `CLAUDE.md`, or its rules are out of date.
-- "Set this project up for Claude", "what are the do's and don'ts here?",
+- A project has no `AGENTS.md` or `CLAUDE.md`, or its rules are out of date.
+- "Set this project up for agents", "what are the do's and don'ts here?",
   "refresh the project rules".
 
 ## The three layers
 
 | Layer | Holds | Lives in |
 |---|---|---|
-| **Know** | What to read first; the do's and don'ts, each with its reason; one real file to imitate per kind of work | `CLAUDE.md` at the repository root — Claude Code reads it at the start of every session |
+| **Know** | What to read first; the do's and don'ts, each with its reason; one real file to imitate per kind of work | `AGENTS.md` at the repository root, which most agents read at the start of every session; for Claude Code, a `CLAUDE.md` whose only line is `@AGENTS.md` |
 | **Why** | The realities that make general instinct wrong here; the decisions already made; how work is done | `docs/` — constraints, decision records, plans, guides |
 | **Never** | Rules too important to depend on being remembered | Git hooks, CI checks, `.claude/settings.json` hooks and permissions |
 
-Each layer points to the next instead of copying it, so `CLAUDE.md` stays short
+Each layer points to the next instead of copying it, so `AGENTS.md` stays short
 enough to read every time.
 
 ## Setting a project up
@@ -29,7 +31,9 @@ enough to read every time.
 2. **Ask what the code cannot show**: who decides and who merges; the
    real-world limits (users, devices, budget, hosting, law); what must never
    happen; where staging and production live.
-3. **Write `CLAUDE.md`** (template below).
+3. **Write `AGENTS.md`** (template below) — plus, if anyone uses Claude Code,
+   a `CLAUDE.md` whose only line is `@AGENTS.md`. A project that already has a
+   full `CLAUDE.md` extends that instead.
 4. **Write `docs/explanation/constraints.md`**: the few realities that look
    wrong by general instinct and are right here (template below).
 5. **Start a decision log** — `docs/decisions/`, numbered, with an index — if
@@ -41,12 +45,12 @@ enough to read every time.
 
 ## Refreshing a project
 
-It compares each claim in `CLAUDE.md` and the constraints with the code and the
+It compares each claim in `AGENTS.md` (or `CLAUDE.md`) and the constraints with the code and the
 recent history, reports what is stale, missing or contradicted, and fixes it in
 one pull request. Anything the repository should not hold — personal
-preferences, dashboard paths — goes to Claude's memory instead.
+preferences, dashboard paths — goes to the agent's memory instead.
 
-## `CLAUDE.md` template
+## `AGENTS.md` template
 
 ```markdown
 # Working in this repository

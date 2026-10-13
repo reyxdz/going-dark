@@ -1,19 +1,23 @@
 # Getting started
 
-This page takes you from nothing to using going-dark on a real project.
+This page takes you from nothing to using going-dark on a real project, in the
+agent you already use.
 
 ## 1. What you need
 
-| Need | Why | Check |
+| Need | For | Check |
 |---|---|---|
-| Claude Code with plugin support | going-dark is a Claude Code plugin | `claude --version` |
+| An AI coding agent | Claude Code, Codex, Gemini CLI, Copilot, Cursor, or any agent that reads `AGENTS.md` | — |
 | `git` | Every skill reads and works with a repository | `git --version` |
-| `bash` | The standing rules load through a hook that runs in bash. On Windows, Git for Windows provides it | `bash --version` |
+| Node.js 20 or later | The installer, for every agent except Claude Code | `node --version` |
+| `bash` | Claude Code only: the standing rules load through a hook that runs in bash. On Windows, Git for Windows provides it | `bash --version` |
 | GitHub CLI `gh`, signed in (recommended) | The issue and audit skills read and edit issues and pull requests through it | `gh auth status` |
 
-Nothing else is installed: no packages, no servers, no background processes.
+Nothing runs in the background, and nothing is installed globally.
 
 ## 2. Install
+
+### Claude Code
 
 Inside Claude Code:
 
@@ -22,75 +26,123 @@ Inside Claude Code:
 /plugin install go-dark@going-dark
 ```
 
-Or from a terminal:
+Or from a terminal, choosing the scope:
 
 ```
 claude plugin marketplace add reyxdz/going-dark
-claude plugin install go-dark@going-dark
+claude plugin install go-dark@going-dark --scope user
 ```
 
-**Choose where it applies** with `--scope` on the terminal command:
-
-| Scope | Applies to | Use it when |
+| Scope | Applies to | Recorded in |
 |---|---|---|
-| `user` (default) | Every project you open on this machine | It is your working method everywhere |
-| `project` | One project, for everyone who opens it — recorded in that project's `.claude/settings.json` | A team agrees to work this way in one repository |
-| `local` | One project, only for you — recorded in `.claude/settings.local.json`, which is not committed | You want it in one repository without imposing it on others |
+| `user` (default) | Every project you open on this machine | your user settings |
+| `project` | One project, for everyone who opens it | the project's `.claude/settings.json` |
+| `local` | One project, only for you | the project's `.claude/settings.local.json` (not committed) |
+
+Restart Claude Code. Skills and hooks load when a session starts.
+
+### Codex, Gemini CLI, Copilot, Cursor and any other agent
+
+Run the installer from GitHub with `npx`:
 
 ```
-claude plugin install go-dark@going-dark --scope project
+npx github:reyxdz/going-dark install --agent <agent> [--scope user|project]
 ```
 
-Then **restart Claude Code**. Skills and hooks load when a session starts.
+| `--agent` | Agent | `--scope user` | `--scope project` |
+|---|---|---|---|
+| `codex` | OpenAI Codex | skills `~/.agents/skills`, rules `~/.codex/AGENTS.md` | skills `.agents/skills`, rules `AGENTS.md` |
+| `gemini` | Gemini CLI | skills `~/.agents/skills`, rules `~/.gemini/GEMINI.md` | skills `.agents/skills`, rules `GEMINI.md` |
+| `copilot` | GitHub Copilot | skills `~/.agents/skills` (no user-level rules file) | skills `.agents/skills`, rules `AGENTS.md` |
+| `cursor` | Cursor | not available | skills `.agents/skills`, rules `AGENTS.md` |
+| `agents` | Any agent that reads `AGENTS.md` | not available | skills `.agents/skills`, rules `AGENTS.md` |
+
+- **The default scope** is `user` where the agent supports it, otherwise
+  `project`.
+- **`--scope project`** installs into the current folder; add
+  `--project <dir>` to choose another.
+- **`--dry-run`** shows every file it would change, and changes nothing.
+- **`npx github:reyxdz/going-dark agents`** prints the exact paths on your
+  machine.
+
+`.agents/skills` is the skills folder Codex, Gemini CLI and Copilot CLI share,
+so installing for two of them keeps a single copy.
+
+**What it changes, exactly:**
+
+1. **Skills** — five folders, `go-dark-audit-pr` … `go-dark-write-issue`, each
+   with a `SKILL.md` and a `.going-dark` marker file. If a folder of that name
+   already exists *without* the marker, it stops and changes nothing.
+2. **Rules** — one block in the rules file, between
+   `<!-- going-dark:start … -->` and `<!-- going-dark:end -->`. It holds the
+   standing rules and a list of every skill with the file to read, so an agent
+   without native skill support still finds and follows them. Everything else
+   in the file is left exactly as it was. Running the installer again replaces
+   the block; it never adds a second one.
+
+Start a new session in your agent to pick the changes up.
 
 ## 3. Check it works
 
-1. In a terminal: `claude plugin list`. You should see `go-dark@going-dark`,
-   status **enabled**.
-2. `claude plugin details go-dark` lists **5 skills** and **1 hook**
-   (`SessionStart`).
-3. In a new Claude Code session, type `/go-dark:`. Five commands appear:
-   `audit-pr`, `project-context`, `project-flow`, `write-handoff`,
-   `write-issue`.
-4. Ask Claude: *"Which going-dark standing rules are you following?"* It
-   should list the seven rules from [Standing rules](./standing-rules.md). If
-   it cannot, see [Troubleshooting](./troubleshooting.md#the-standing-rules-do-not-load).
+**Claude Code**
+
+1. `claude plugin list` shows `go-dark@going-dark`, **enabled**.
+2. `claude plugin details go-dark` lists **5 skills** and **1 hook**.
+3. In a new session, typing `/go-dark:` shows the five commands.
+
+**Other agents**
+
+1. The rules file you installed to contains the `going-dark:start` block.
+2. The skills folder contains the five `go-dark-*` folders.
+
+**Every agent:** ask *"Which going-dark standing rules are you following?"* It
+should list the seven rules from [Standing rules](./standing-rules.md). If it
+cannot, see [Troubleshooting](./troubleshooting.md#the-standing-rules-do-not-load).
 
 ## 4. Your first project
 
-Open Claude Code in the repository you want to work on.
+Open your agent in the repository you want to work on. In Claude Code you can
+type the commands; in any agent you can simply ask, and the matching skill is
+used.
 
-1. **Give it its context.** Run `/go-dark:project-context`. Claude reads the
-   repository, asks you what the code cannot show (who decides, the real-world
-   limits, what must never happen), and proposes a `CLAUDE.md`, a constraints
-   document and the checks that enforce the critical rules. Nothing is
-   committed until you have seen it. Skip this if the project already has a
-   good `CLAUDE.md` — run it later to refresh.
-2. **Turn an idea into an issue.** Describe what you want, then run
-   `/go-dark:write-issue`. Claude asks the questions only you can answer, then
-   drafts the issue and shows it before creating anything on GitHub.
-3. **Plan who builds it.** If an agent or a teammate will carry it out, run
-   `/go-dark:write-handoff` for the issue.
-4. **Audit what comes back.** For each pull request, run
-   `/go-dark:audit-pr <url or number>`. Claude merges the current default
-   branch in a scratch copy, reads the change, fixes what needs fixing on the
-   branch, and reports.
-5. **Keep track.** At any point, `/go-dark:project-flow` tells you where the
-   work stands and what comes next.
-
-You do not have to type the commands. Claude also picks a skill up by itself
-when what you ask matches it — "audit this pull request", "write an issue for
-this", "is #12 finished?".
+1. **Give it its context.** *"Set this project up"* —
+   `/go-dark:project-context` in Claude Code. The agent reads the repository,
+   asks you what the code cannot show (who decides, the real-world limits,
+   what must never happen), and proposes an `AGENTS.md`, a constraints document
+   and the checks that enforce the critical rules. Nothing is committed until
+   you have seen it. Skip this if the project already has good instructions —
+   run it later to refresh.
+2. **Turn an idea into an issue.** Describe what you want, then *"write the
+   issue"* — `/go-dark:write-issue`. The agent asks the questions only you can
+   answer, then drafts the issue and shows it before creating anything.
+3. **Plan who builds it.** If an agent or a teammate will carry it out,
+   *"write a handoff for #12"* — `/go-dark:write-handoff`.
+4. **Audit what comes back.** *"Audit pull request 42"* — `/go-dark:audit-pr`.
+   The agent merges the current default branch in a scratch copy, reads the
+   change, fixes what needs fixing on the branch, and reports.
+5. **Keep track.** *"Is #12 finished?"* — `/go-dark:project-flow` — tells you
+   where the work stands and what comes next.
 
 ## 5. Update, pause or remove
+
+**Claude Code**
 
 | To | Run |
 |---|---|
 | Get the latest version | `claude plugin marketplace update going-dark`, then restart |
 | Pause it, keep it installed | `claude plugin disable go-dark@going-dark` |
 | Turn it back on | `claude plugin enable go-dark@going-dark` |
-| Remove it | `claude plugin uninstall go-dark@going-dark` |
-| Forget the source too | `claude plugin marketplace remove going-dark` |
+| Remove it | `claude plugin uninstall go-dark@going-dark`, then `claude plugin marketplace remove going-dark` |
 
-Removing it changes nothing in your projects: it never writes to a project
-unless you ask it to.
+**Other agents**
+
+| To | Run |
+|---|---|
+| Get the latest version | the same `install` command again — `npx` fetches the latest |
+| Remove it | `npx github:reyxdz/going-dark uninstall --agent <agent> [--scope …]` |
+
+`uninstall` removes exactly what `install` added: the marked skill folders, the
+folders it created if they are left empty, and the rules block — restoring the
+rules file as it was, or deleting it if going-dark had created it. Because
+`~/.agents/skills` is shared, uninstalling for one agent removes the skills for
+the others that read that folder too.

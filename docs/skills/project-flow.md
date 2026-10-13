@@ -1,5 +1,7 @@
 # `/go-dark:project-flow`
 
+> **Claude Code:** `/go-dark:project-flow` · **Other agents:** the `go-dark-project-flow` skill — ask for it by what you want, or by name.
+
 Tells you where a piece of work stands in [the flow](../the-flow.md), what
 comes next, and whether it is really finished.
 
@@ -12,7 +14,7 @@ comes next, and whether it is really finished.
 
 ## What it does
 
-1. Reads the project's own rules first (`CLAUDE.md`, contributing and release
+1. Reads the project's own rules first (`AGENTS.md` or `CLAUDE.md`, contributing and release
    guides). Where the project defines a step differently, the project wins.
 2. Gathers the facts — it does not assume:
    - the issue's state, its Decided section, and its linked pull requests;

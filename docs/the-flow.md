@@ -16,7 +16,7 @@ other skills each own one step.
 |---|---|---|
 | **Owner** | Decides product questions, accepts decision records, approves, merges, releases, owns billing and dashboards | — |
 | **Contributor** (person or agent) | Writes issues and plans, builds, opens pull requests | Merges or releases |
-| **Auditor** (usually Claude) | Audits pull requests and fixes what needs fixing on the branch | Approves, merges or releases |
+| **Auditor** (usually an AI agent) | Audits pull requests and fixes what needs fixing on the branch | Approves, merges or releases |
 
 One person can hold several roles. The point is that only the owner moves work
 past step 6.

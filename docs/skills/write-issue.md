@@ -1,5 +1,7 @@
 # `/go-dark:write-issue`
 
+> **Claude Code:** `/go-dark:write-issue` · **Other agents:** the `go-dark-write-issue` skill — ask for it by what you want, or by name.
+
 Writes an issue as a **specification**: someone who never saw the conversation
 can plan or build from it without guessing.
 
@@ -12,7 +14,7 @@ can plan or build from it without guessing.
 
 ## What it does
 
-1. **Reads the project**: `CLAUDE.md`, its constraints and decision records,
+1. **Reads the project**: `AGENTS.md` or `CLAUDE.md`, its constraints and decision records,
    its issue templates, and two or three recent issues — to match labels and
    voice.
 2. **Collects facts from the code**, not memory: the file and line of a bug,

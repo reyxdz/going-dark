@@ -1,5 +1,7 @@
 # `/go-dark:audit-pr`
 
+> **Claude Code:** `/go-dark:audit-pr` · **Other agents:** the `go-dark-audit-pr` skill — ask for it by what you want, or by name.
+
 Audits a pull request to one bar — **perfectly safe to merge while keeping its
 purpose** — and fixes what needs fixing on the branch, rather than only listing
 it.
@@ -25,7 +27,7 @@ minute during a release.
 
 ## The process
 
-1. **Context.** The project's rules (`CLAUDE.md`, the PR template, the guide
+1. **Context.** The project's rules (`AGENTS.md` or `CLAUDE.md`, the PR template, the guide
    its PR check enforces), the pull request's description, its issue and plan.
 2. **State.** `gh pr view` (state, mergeable, review decision), `gh pr checks`,
    how far behind the default branch it is, and the commit it was cut from.

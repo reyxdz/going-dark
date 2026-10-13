@@ -1,5 +1,7 @@
 # `/go-dark:write-handoff`
 
+> **Claude Code:** `/go-dark:write-handoff` · **Other agents:** the `go-dark-write-handoff` skill — ask for it by what you want, or by name.
+
 Writes a **handoff prompt**: a document that lets an agent or contributor with
 no memory of the conversation carry out an issue exactly as decided — and stop
 instead of guessing. It is written for the least capable reader.

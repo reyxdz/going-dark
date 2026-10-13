@@ -10,7 +10,7 @@ true whichever skill is running.
 > otherwise, the project wins: follow it, and say which rule it overrode.
 
 The rules are a default, not a law above the project. A project that wants AI
-attribution, or lets contributors merge, says so in its own files and Claude
+attribution, or lets contributors merge, says so in its own files and the agent
 follows it — and says so, so the difference is visible.
 
 ## 1. Minimal local load

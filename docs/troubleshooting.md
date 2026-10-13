@@ -1,68 +1,91 @@
 # Troubleshooting and FAQ
 
-## The `/go-dark:` commands don't appear
+## Claude Code: the `/go-dark:` commands don't appear
 
 1. **Restart Claude Code.** Skills load when a session starts.
-2. Check it is installed and enabled: `claude plugin list` should show
-   `go-dark@going-dark` as **enabled**. If it says disabled:
-   `claude plugin enable go-dark@going-dark`.
+2. `claude plugin list` should show `go-dark@going-dark` as **enabled**. If it
+   says disabled: `claude plugin enable go-dark@going-dark`.
 3. Check the scope. Installed with `--scope project` or `--scope local`, it
    appears only in that project.
-4. Check its contents: `claude plugin details go-dark` should list 5 skills.
+4. `claude plugin details go-dark` should list 5 skills.
+
+## Other agents: the skills aren't used
+
+1. **Start a new session.** Agents read skills and rules when a session starts.
+2. Run `npx github:reyxdz/going-dark agents` and check the folder your agent
+   reads holds the five `go-dark-*` folders.
+3. Check the rules file holds the `<!-- going-dark:start` block. That block
+   lists every skill and its file, so even if your agent does not load skills
+   natively, it can find them — ask it to *"use the go-dark-audit-pr skill"*.
+4. If your agent reads neither `.agents/skills` nor `AGENTS.md`, use
+   `--agent agents --scope project` and point the agent at `AGENTS.md` in its
+   own settings.
+
+## The installer says a folder "was not made by going-dark"
+
+A skill folder of the same name already exists and has no `.going-dark` marker,
+so it may be someone else's. The installer stopped without changing anything.
+Move that folder aside and run the installer again.
 
 ## The standing rules do not load
 
-The rules load through a hook that runs in **bash**.
+**Claude Code** loads them through a hook that runs in **bash**:
 
 1. Run `bash --version`. On Windows, install Git for Windows if bash is
    missing, then restart Claude Code.
-2. Check the hook is registered: `claude plugin details go-dark` lists
-   `Hooks (1) SessionStart`.
-3. Ask Claude, in a new session: *"Which going-dark standing rules are you
-   following?"* If it cannot say, the hook did not run — check the two steps
-   above and that the plugin is enabled.
+2. `claude plugin details go-dark` should list `Hooks (1) SessionStart`.
+
+**Other agents** load them from the rules file: check the `going-dark:start`
+block is in the file your agent reads (`npx github:reyxdz/going-dark agents`
+shows which).
+
+Then ask, in a new session: *"Which going-dark standing rules are you
+following?"*
 
 ## A skill runs when I didn't want it
 
-Claude chooses a skill when your request matches its description. Say what you
+Agents choose a skill when your request matches its description. Say what you
 want instead — "just answer, don't audit". If it keeps happening in one
-project, install going-dark only where you want it (`--scope project` or
-`--scope local`) rather than for every project. To change *when* a skill
-triggers, see [Customising](./customising.md#4-fork-it-and-change-the-method).
+project, install going-dark only where you want it (`--scope project`) rather
+than for every project. To change *when* a skill triggers, see
+[Customising](./customising.md#4-fork-it-and-change-the-method).
 
 ## A project's rules disagree with going-dark
 
-That is expected and handled: **the project wins**, and Claude says which
-going-dark rule it overrode. If Claude follows going-dark instead, make the
-project's rule explicit in its `CLAUDE.md`.
+That is expected and handled: **the project wins**, and the agent says which
+going-dark rule it overrode. If the agent follows going-dark instead, make the
+project's rule explicit in its `AGENTS.md` or `CLAUDE.md`.
 
 ## An update didn't take effect
 
-1. `claude plugin marketplace update going-dark`
-2. Restart Claude Code.
-3. `claude plugin list` should show the new version.
+- **Claude Code:** `claude plugin marketplace update going-dark`, restart, and
+  check `claude plugin list` shows the new version.
+- **Other agents:** run the install command again; the `going-dark:start` line
+  in the rules file shows the installed version.
 
 ## FAQ
 
 **Does it send anything anywhere?**
-No. It has no scripts, servers or network calls of its own. The skills use the
-tools you already have — `git`, `gh` — only when a task needs them, and the
-standing rules require asking before anything outward-facing.
+No. The installer copies files and makes no network calls of its own; `npx`
+fetches it from GitHub. The skills use the tools you already have — `git`,
+`gh` — only when a task needs them, and the standing rules require asking
+before anything outward-facing.
 
 **Does it change my projects?**
-Only when you ask. `/go-dark:project-context` proposes files and shows them
-before committing; the other skills create issues, push fixes or open pull
-requests only as part of what you asked for, after the checks in
-[Standing rules](./standing-rules.md#5-roles).
+Only when you ask. The installer writes only the files listed in
+[Getting started](./getting-started.md#2-install), and only inside its marked
+block in a rules file. The project-context skill proposes files and shows them
+before committing.
 
 **Does it work without GitHub?**
 The flow and the standards do. The parts that read or edit issues and pull
-requests use the GitHub CLI; on another host, Claude falls back to that host's
-tools or asks you to do that step.
+requests use the GitHub CLI; on another host, the agent uses that host's tools
+or asks you to do that step.
 
 **Why "no AI attribution"?**
 The commit history records the people accountable for the work. A project that
-wants attribution can override it — see [Standing rules](./standing-rules.md#4-no-ai-attribution).
+wants attribution can override it — see
+[Standing rules](./standing-rules.md#4-no-ai-attribution).
 
 **Can I use only one skill?**
 Yes. Each skill works on its own; [the flow](./the-flow.md) only connects them.
