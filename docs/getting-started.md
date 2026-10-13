@@ -140,6 +140,7 @@ used.
 | To | Run |
 |---|---|
 | Get the latest version | the same `install` command again — `npx` fetches the latest |
+| Stay on one version | add the release tag: `npx github:reyxdz/going-dark#v0.3.0 install --agent <agent>` |
 | Remove it | `npx github:reyxdz/going-dark uninstall --agent <agent> [--scope …]` |
 
 `uninstall` removes exactly what `install` added: the marked skill folders, the
