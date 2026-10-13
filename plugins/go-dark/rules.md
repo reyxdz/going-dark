@@ -1,4 +1,4 @@
-# going-dark — standing rules (every project)
+# going-dark: standing rules (every project)
 
 These apply in every project. Where a project's own `CLAUDE.md`, `AGENTS.md`
 or contributing guide says otherwise, the project wins: follow it, and say

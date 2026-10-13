@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { END, START, hasBlock, removeBlock, renderRulesBlock, upsertBlock } from '../src/rules-block.mjs';
 
-const RULES = `# going-dark — standing rules
+const RULES = `# going-dark: standing rules
 
 1. **Minimal local load.**
 
@@ -21,7 +21,7 @@ test('the block is marked, versioned, and lists each skill with its file', () =>
 });
 
 test('the rules sit one heading level down, without the duplicate one-line skill list', () => {
-  assert.match(block, /^## going-dark — standing rules$/m);
+  assert.match(block, /^## going-dark: standing rules$/m);
   assert.doesNotMatch(block, /The going-dark skills:/);
   assert.doesNotMatch(block, /\/go-dark:/);
 });

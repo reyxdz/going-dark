@@ -79,8 +79,23 @@ test('a dry run changes nothing', () => {
   assert.ok(!existsSync(join(home, '.gemini')));
 });
 
-test('Cursor has no user-level folder, so a user install says to use the project scope', () => {
-  assert.throws(() => install({ root, agent: 'cursor', scope: 'user', project }), /--scope project/);
+test('Cursor reads user-level skills, but keeps its user rules in settings, so the install says so', () => {
+  const result = install({ root, agent: 'cursor', scope: 'user', project });
+  assert.ok(existsSync(join(home, '.agents', 'skills', 'go-dark-audit-pr', 'SKILL.md')));
+  assert.match(result.notes.join(' '), /--scope project/);
+  uninstall({ agent: 'cursor', scope: 'user', project });
+  assert.ok(!existsSync(join(home, '.agents')));
+});
+
+test('a user install for Copilot writes its user instructions file', () => {
+  install({ root, agent: 'copilot', scope: 'user', project });
+  assert.ok(readFileSync(join(home, '.copilot', 'copilot-instructions.md'), 'utf8').includes(START));
+  uninstall({ agent: 'copilot', scope: 'user', project });
+  assert.ok(!existsSync(join(home, '.copilot', 'copilot-instructions.md')));
+});
+
+test('an agent with no user-level folders at all says to use the project scope', () => {
+  assert.throws(() => install({ root, agent: 'agents', scope: 'user', project }), /--scope project/);
 });
 
 test('Claude Code is installed through its plugin system', () => {
