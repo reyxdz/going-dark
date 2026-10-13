@@ -20,7 +20,8 @@ be measured.
 2. Gather facts from the code, not memory: the file and line of a bug, the
    numbers (sizes, timings, counts), the decision records that apply.
 3. Put the product questions only the owner can answer to them — with
-   AskUserQuestion, a recommended option first — before writing.
+   two to four options, the recommended one first (in Claude Code, the
+   AskUserQuestion tool) — before writing.
 
 ## The title
 

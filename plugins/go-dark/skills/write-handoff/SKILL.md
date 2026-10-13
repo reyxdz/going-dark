@@ -18,7 +18,8 @@ every step with a check, and every point of doubt turned into "stop and ask".
    questions are decided. Any decision record it needs is accepted, and its
    plan is Ready. If not, finish those first (`/go-dark:project-flow`).
 2. **Decide what is still open.** Put each remaining choice to the owner with
-   AskUserQuestion — two to four options, recommended first, with the
+   two to four options, recommended first (in Claude Code, the
+   AskUserQuestion tool), with the
    trade-off in each description. Never write a handoff on an assumption.
 3. **Establish ground truth.** Read the code the work touches on the default
    branch, and note the commit hash. Record function names, file paths,
