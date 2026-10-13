@@ -19,8 +19,11 @@ can plan or build from it without guessing.
    voice.
 2. **Collects facts from the code**, not memory: the file and line of a bug,
    real numbers (sizes, timings, counts), the decision records that apply.
-3. **Asks you the product questions** only you can answer, two to four options
-   each, recommended option first.
+3. **Asks you only what changes the product, its cost or its risk** — scope,
+   limits, what users see — two to four options each, recommended option
+   first. Technical details it decides itself, and records under Decided
+   marked *(technical call)*. Where the project has no context files, it asks
+   or marks its assumptions *(unverified)*.
 4. **Drafts the issue** in the order below.
 5. **Shows you the draft and asks before creating it**: creating an issue is
    outward-facing.
@@ -47,9 +50,9 @@ Use the ones that apply; never leave one empty.
 | 1 | **Summary** | The real problem: who tries what, what happens, why it matters. A bug names the file and line; a technical issue gives numbers |
 | 2 | **Why it happens** | Technical issues only: the root cause, citing the decision record behind it |
 | 3 | **What to build** | Checkboxes grouped by layer (Data, Enforcement, UI, Housekeeping); each concrete and testable; specifications as tables; rejected options with their reason |
-| 4 | **Decide first** → **Decided (name, YYYY-MM-DD)** | Open questions as unticked boxes; once settled, the heading changes and each box is ticked with its answer |
+| 4 | **Decided (name, YYYY-MM-DD)** | Every answered question, ticked, with its answer — the name is the owner as the project knows them. **Decide first** (unticked) exists only for questions the owner deferred |
 | 5 | **Verify / Done when** | Measurable acceptance: exact numbers, exact behaviour, named tests, a check on staging |
-| 6 | **Not in this ticket** | What is out of scope, and which issue covers it |
+| 6 | **Not in this ticket** | What is out of scope, and which issue covers it — or "no issue yet", with an offer to file one |
 | 7 | **Docs** | Which reference documents must change |
 | 8 | **Notes** | Where it came from ("raised in #41's audit"), timing |
 | 9 | **How to ship** | A pull request into the default branch through its template, checks passing, link to the guide |

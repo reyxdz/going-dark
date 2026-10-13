@@ -20,9 +20,12 @@ instead of guessing. It is written for the least capable reader.
 | Every open question on it is decided | Ask the owner (next row) |
 | Any decision record it needs is Accepted, and its plan is Ready | Finish step 2 of [the flow](../the-flow.md) |
 
-1. **Ask what is still open.** Each remaining choice goes to the owner with
-   two to four options, the recommended one first, the trade-off in each.
-   A handoff is never written on an assumption.
+1. **Find what is still open — even in an issue called "fully decided".**
+   Behaviour at and over each limit, formats, security (injection, access,
+   personal data), logging, error copy, and how many pull requests the work
+   should be. Each goes to the owner with two to four options, the recommended
+   one first, the trade-off in each. A handoff is never written on an
+   assumption.
 2. **Establish ground truth.** It reads the code the work touches on the
    default branch and records the **commit hash**. It notes function names,
    file paths, defaults, test patterns, how migrations run, and what an older
@@ -32,6 +35,19 @@ instead of guessing. It is written for the least capable reader.
    exactly is compiled or run in a scratch copy first, then the scratch copy is
    deleted. Pull request descriptions given verbatim are run through the
    project's own PR check.
+
+## When it cannot be finished yet
+
+If the code cannot be read, a verbatim part cannot be proven, or the owner has
+not answered, it does not hand over something that only looks ready. It writes
+a **draft**:
+
+- headed `STATUS: DRAFT — BLOCKED. Do not execute.`;
+- every unchecked fact marked `[VERIFY: what to check]`, every unanswered
+  question `[OPEN Qn]`, every unproven verbatim part `[UNPROVEN]`;
+- with the list of what unblocks it.
+
+A draft is never saved as Ready; in the index its status is **Draft**.
 
 ## The document
 
@@ -98,7 +114,7 @@ cannot fix it, stop and ask (section <last>).
 ## Delivering it
 
 - **Saved** as `docs/handoffs/issue-<number>-<short-title>.md`, with a row in
-  that folder's README index (status *Ready*, later *Complete*).
+  that folder's README index (status *Draft*, *Ready*, later *Complete*).
 - **In chat**, when asked: it opens with one line naming the reader —
   *"Written for: an agent implementing #123"* — and wraps the document in a
   code fence longer than any fence inside it, so it copies cleanly.

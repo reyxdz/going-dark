@@ -23,8 +23,17 @@ comes next, and whether it is really finished.
    - any decision record's status;
    - **whether the release branch contains the work**:
      `git merge-base --is-ancestor <merge-commit> origin/<release-branch>`.
-3. Walks the nine steps and stops at the **first one not done**.
-4. Reports that step, what is left in it, and who owns it.
+3. Compares the merged pull requests with the plan's phases, and says so if
+   they don't match.
+4. Classifies every step as done, not done, or **unconfirmed** (one it could
+   not check). Unconfirmed steps are reported with what would confirm them,
+   and don't block the steps after.
+5. Reports the first step not done, then every remaining step in order with
+   what is left and **who owns it** (the owner, unless the plan names someone),
+   then the unconfirmed steps, and which project rules it read.
+
+Without a release rhythm in the project, it flags a release branch more than
+two weeks or ten merged pull requests behind.
 
 ## Example report
 

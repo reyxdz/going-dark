@@ -21,6 +21,11 @@ it.
 | Anything needs even a little attention | It is fixed on the branch, not just reported |
 | A finding does not belong in this pull request | It becomes an issue, linked from the report |
 
+**An audit includes its fixes.** Asking for an audit is asking for the fixes
+on the pull request's branch. The fixes are reported as suggested patches
+instead only when you ask for a verdict alone, or the branch is a fork the
+agent cannot push to.
+
 "A little attention" includes stale lines in the description, duplicated
 screenshots, a test that only passes by luck, and a badge that breaks for a
 minute during a release.
@@ -30,7 +35,9 @@ minute during a release.
 1. **Context.** The project's rules (`AGENTS.md` or `CLAUDE.md`, the PR template, the guide
    its PR check enforces), the pull request's description, its issue and plan.
 2. **State.** `gh pr view` (state, mergeable, review decision), `gh pr checks`,
-   how far behind the default branch it is, and the commit it was cut from.
+   how far behind the default branch it is, and the commit it was cut from —
+   plus the **other open pull requests** and their files, because two claiming
+   the same plan, ADR or migration number only shows up there.
 3. **Merge first, in a scratch worktree** — never the user's checkout.
    A trial merge of the current default branch finds conflicts, and also the
    breakage a clean merge hides: two pull requests claiming the same plan, ADR
@@ -45,7 +52,12 @@ minute during a release.
      gone, and a push would recreate it);
    - merge the default branch in if it is behind;
    - one commit per fix, with a message that says **why**;
-   - a test that **fails without the fix** — proven by reverting the fix once;
+   - what the description promises but the diff lacks is built when small
+     and clearly in scope, otherwise reported as a blocker for the owner;
+   - a **behaviour** fix gets a test that **fails without the fix** — proven
+     by reverting it once; a fix to docs, records or the description does not;
+   - tests that need a database the machine is not already running are left
+     to CI;
    - push normally, **never force**, and watch CI to green.
 7. **Report.**
 
@@ -78,13 +90,21 @@ request from the default branch — never onto the merged branch.
 ## The report
 
 ```markdown
-<Verdict in one sentence: safe to merge / not yet, and the one thing blocking.>
+<Verdict: safe to merge, or not yet — with every blocker, most severe first.>
 
 **What I fixed** (<n> commits on <branch>, normal pushes, no AI attribution):
 1. **<Problem>** — <why it mattered>. <What changed>. <The test that proves it.>
 
+**Questions only you can answer:**
+- <intent, retention, scope>
+
 **What I checked and found sound:**
 - <area> — <what was verified>
+
+**Not verified:**
+- <what, and why>
+
+**CI after the fixes:** <result>
 
 **Not worth holding it for:**
 - <only genuinely cosmetic items>

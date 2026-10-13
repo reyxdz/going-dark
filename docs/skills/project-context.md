@@ -30,7 +30,9 @@ enough to read every time.
    commits, open issues and pull requests.
 2. **Ask what the code cannot show**: who decides and who merges; the
    real-world limits (users, devices, budget, hosting, law); what must never
-   happen; where staging and production live.
+   happen; where staging and production live; **which AI agents the team
+   uses**; and **which don'ts to enforce**. If you are away, it drafts every
+   file with `[OWNER: question]` placeholders and commits nothing.
 3. **Write `AGENTS.md`** (template below) — plus, if anyone uses Claude Code,
    a `CLAUDE.md` whose only line is `@AGENTS.md`. A project that already has a
    full `CLAUDE.md` extends that instead.
@@ -38,8 +40,11 @@ enough to read every time.
    wrong by general instinct and are right here (template below).
 5. **Start a decision log** — `docs/decisions/`, numbered, with an index — if
    there is none, and record the choices that would be expensive to reverse.
-6. **Enforce the critical don'ts**: a commit hook for attribution or secrets;
-   CI checks for the PR template, docs and size budgets — whatever applies.
+6. **Enforce the don'ts you chose**: a git hook plus how a fresh clone
+   switches it on (`git config core.hooksPath .githooks`), and a CI job running
+   the same check, since a fresh clone has no hooks; a pull request template;
+   and the agents' own settings where they support them (deny force-pushes
+   and reading `.env` files).
 7. **Show you every file before committing**, and land them through the
    project's normal pull request flow.
 
