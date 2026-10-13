@@ -65,6 +65,23 @@ project:
 and says which rule it overrode. Each skill starts by reading the project's
 own conventions, and uses this method only where the project has none.
 
+## Documentation
+
+The full documentation is in [`docs/`](./docs/README.md):
+
+- [Getting started](./docs/getting-started.md) — install, check it works,
+  first project.
+- [The flow](./docs/the-flow.md) and [standing rules](./docs/standing-rules.md).
+- One page per skill, each with a ready-to-use template:
+  [project flow](./docs/skills/project-flow.md),
+  [write an issue](./docs/skills/write-issue.md),
+  [write a handoff](./docs/skills/write-handoff.md),
+  [audit a pull request](./docs/skills/audit-pr.md),
+  [project context](./docs/skills/project-context.md).
+- [Customising](./docs/customising.md),
+  [how it is built](./docs/how-it-is-built.md),
+  [troubleshooting and FAQ](./docs/troubleshooting.md).
+
 ## Update or remove
 
 ```
