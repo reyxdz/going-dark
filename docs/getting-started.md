@@ -10,7 +10,6 @@ agent you already use.
 | An AI coding agent | Claude Code, Codex, Gemini CLI, Copilot, Cursor, or any agent that reads `AGENTS.md` | — |
 | `git` | Every skill reads and works with a repository | `git --version` |
 | Node.js 20 or later | The installer, for every agent except Claude Code | `node --version` |
-| `bash` | Claude Code only: the standing rules load through a hook that runs in bash. On Windows, Git for Windows provides it | `bash --version` |
 | GitHub CLI `gh`, signed in (recommended) | The issue and audit skills read and edit issues and pull requests through it | `gh auth status` |
 
 Nothing runs in the background, and nothing is installed globally.
@@ -53,8 +52,8 @@ npx github:reyxdz/going-dark install --agent <agent> [--scope user|project]
 |---|---|---|---|
 | `codex` | OpenAI Codex | skills `~/.agents/skills`, rules `~/.codex/AGENTS.md` | skills `.agents/skills`, rules `AGENTS.md` |
 | `gemini` | Gemini CLI | skills `~/.agents/skills`, rules `~/.gemini/GEMINI.md` | skills `.agents/skills`, rules `GEMINI.md` |
-| `copilot` | GitHub Copilot | skills `~/.agents/skills` (no user-level rules file) | skills `.agents/skills`, rules `AGENTS.md` |
-| `cursor` | Cursor | not available | skills `.agents/skills`, rules `AGENTS.md` |
+| `copilot` | GitHub Copilot | skills `~/.agents/skills`, rules `~/.copilot/copilot-instructions.md` | skills `.agents/skills`, rules `AGENTS.md` |
+| `cursor` | Cursor | skills `~/.agents/skills` (Cursor keeps user rules in Settings → Rules, so use `--scope project` for the rules) | skills `.agents/skills`, rules `AGENTS.md` |
 | `agents` | Any agent that reads `AGENTS.md` | not available | skills `.agents/skills`, rules `AGENTS.md` |
 
 - **The default scope** is `user` where the agent supports it, otherwise
@@ -65,8 +64,10 @@ npx github:reyxdz/going-dark install --agent <agent> [--scope user|project]
 - **`npx github:reyxdz/going-dark agents`** prints the exact paths on your
   machine.
 
-`.agents/skills` is the skills folder Codex, Gemini CLI and Copilot CLI share,
-so installing for two of them keeps a single copy.
+`.agents/skills` is the skills folder Codex, Gemini CLI, GitHub Copilot and
+Cursor all read, so installing for several of them keeps a single copy. Gemini
+CLI reads `GEMINI.md`, not `AGENTS.md`, unless its `context.fileName` setting
+names `AGENTS.md` — so its rules go into `GEMINI.md`.
 
 **What it changes, exactly:**
 

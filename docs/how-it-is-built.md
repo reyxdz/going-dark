@@ -64,9 +64,13 @@ description up front, and the body when the skill is used.
    each skill folder becomes the rest: `skills/audit-pr/` →
    `/go-dark:audit-pr`.
 3. **The hook.** `hooks/hooks.json` runs `cat "${CLAUDE_PLUGIN_ROOT}/rules.md"`
-   in bash on `startup`, `clear` and `compact`. Text a session-start hook
-   prints is added to the session's context, so the rules hold from the first
-   message and again after a compaction.
+   on `startup`, `clear` and `compact`. Claude Code substitutes the path
+   itself, and runs the command in bash — or in PowerShell on Windows when
+   Git Bash is not installed, where `cat` also prints a file. That is why the
+   hook sets no `shell`, and why `rules.md` is plain ASCII: PowerShell may
+   read a file without a byte-order mark in the system code page. Text a
+   session-start hook prints is added to the session's context, so the rules
+   hold from the first message and again after a compaction.
 
 ## In every other agent
 
@@ -105,9 +109,11 @@ Run by CI on every push and pull request (`npm run check`):
 
 - the marketplace entry, `plugin.json` and `package.json` agree on name,
   location and version;
-- every skill's folder name is valid and matches its `name`, its description
-  starts with "Use when", and its frontmatter is within 1,024 characters;
-- the hook loads `rules.md`, and the file exists;
+- every skill's folder name follows the Agent Skills rules (1-64 lowercase
+  letters, digits and single hyphens) and matches its `name`; its description
+  starts with "Use when" and is at most 1,024 characters;
+- the hook loads `rules.md`, does not force bash, and `rules.md` is plain
+  ASCII;
 - **every relative link and `#anchor` in every Markdown file resolves**.
 
 ## Tests
@@ -117,6 +123,19 @@ parsing, renaming for other agents, the rules block (idempotent install,
 in-place update, exact removal), installs and uninstalls in a temporary home
 and project, refusing a foreign folder, dry runs, and the repository passing
 its own check.
+
+## Sources for the agent paths
+
+Every path in `src/agents.mjs` comes from the vendor's own documentation,
+checked on 2026-10-14:
+
+| Agent | Skills | Rules | Source |
+|---|---|---|---|
+| OpenAI Codex | `~/.agents/skills`, `.agents/skills` | `~/.codex/AGENTS.md`, `AGENTS.md` | [Skills](https://learn.chatgpt.com/docs/build-skills), [AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md) |
+| Gemini CLI | `~/.agents/skills`, `.agents/skills` (aliases of `~/.gemini/skills`, `.gemini/skills`) | `~/.gemini/GEMINI.md`, `GEMINI.md` | [Skills](https://geminicli.com/docs/cli/skills/), [GEMINI.md](https://geminicli.com/docs/cli/gemini-md/) |
+| GitHub Copilot | `~/.agents/skills`, `.agents/skills` | `~/.copilot/copilot-instructions.md`, `AGENTS.md` | [Skills](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-skills), [Instructions](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-custom-instructions) |
+| Cursor | `~/.agents/skills`, `.agents/skills` | `AGENTS.md` (user rules are in its settings) | [Skills](https://cursor.com/docs/context/skills), [Rules](https://cursor.com/docs/context/rules) |
+| Format | — | — | [Agent Skills specification](https://agentskills.io/specification) |
 
 ## Cost
 
@@ -150,8 +169,9 @@ description: Merges main, reads the diff, fixes problems and reports a verdict.
    `package.json` — `check` fails if they differ. Patch for wording, minor for
    a new skill or rule, major for a change in how an existing skill behaves.
 3. `npm test` and `npm run check`.
-4. Commit with a message that says what changed and why, and push to `main`.
-   CI runs both again on Node 20 and 24.
+4. Add an entry to `CHANGELOG.md`, commit with a message that says what
+   changed and why, and push to `main`. CI runs both again on Linux, Windows
+   and macOS, on Node 20 and 24.
 5. Claude Code users run `claude plugin marketplace update going-dark`; other
    agents run the install command again.
 6. Optionally tag it: `claude plugin tag plugins/go-dark` creates a

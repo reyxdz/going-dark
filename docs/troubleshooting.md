@@ -29,11 +29,14 @@ Move that folder aside and run the installer again.
 
 ## The standing rules do not load
 
-**Claude Code** loads them through a hook that runs in **bash**:
+**Claude Code** loads them through a session-start hook that prints
+`rules.md`. It runs in bash, or in PowerShell on Windows when Git Bash is not
+installed, so no extra install is needed.
 
-1. Run `bash --version`. On Windows, install Git for Windows if bash is
-   missing, then restart Claude Code.
-2. `claude plugin details go-dark` should list `Hooks (1) SessionStart`.
+1. `claude plugin details go-dark` should list `Hooks (1) SessionStart`.
+2. Make sure you are on going-dark 0.3.0 or later
+   (`claude plugin list`): 0.2.0 and earlier forced bash, which fails on
+   Windows without Git Bash.
 
 **Other agents** load them from the rules file: check the `going-dark:start`
 block is in the file your agent reads (`npx github:reyxdz/going-dark agents`

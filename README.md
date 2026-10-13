@@ -37,8 +37,8 @@ npx github:reyxdz/going-dark install --agent codex
 |---|---|---|---|
 | `codex` | OpenAI Codex | skills in `~/.agents/skills`, rules in `~/.codex/AGENTS.md` | `.agents/skills`, `AGENTS.md` |
 | `gemini` | Gemini CLI | skills in `~/.agents/skills`, rules in `~/.gemini/GEMINI.md` | `.agents/skills`, `GEMINI.md` |
-| `copilot` | GitHub Copilot | skills in `~/.agents/skills` | `.agents/skills`, `AGENTS.md` |
-| `cursor` | Cursor | — | `.agents/skills`, `AGENTS.md` |
+| `copilot` | GitHub Copilot | skills in `~/.agents/skills`, rules in `~/.copilot/copilot-instructions.md` | `.agents/skills`, `AGENTS.md` |
+| `cursor` | Cursor | skills in `~/.agents/skills` (its user rules live in Settings → Rules) | `.agents/skills`, `AGENTS.md` |
 | `agents` | Any agent that reads `AGENTS.md` | — | `.agents/skills`, `AGENTS.md` |
 
 Outside Claude Code each skill is named `go-dark-<skill>`. The rules go into
