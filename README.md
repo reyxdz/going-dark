@@ -53,7 +53,7 @@ npx github:reyxdz/going-dark uninstall --agent codex
 npx github:reyxdz/going-dark agents
 ```
 
-To stay on one release, add its tag — `npx github:reyxdz/going-dark#v0.3.0 …`.
+To stay on one release, add its tag — `npx github:reyxdz/going-dark#v0.4.0 …`.
 Every release is listed in the [changelog](CHANGELOG.md).
 
 ## Skills

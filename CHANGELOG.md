@@ -4,6 +4,36 @@ Every release, newest first. Versions follow semantic versioning: a patch for
 wording, a minor version for a new skill, rule or agent, a major version for a
 change in how an existing skill or the installer behaves.
 
+## 0.4.0 — 2026-10-14
+
+**Every skill rewritten for the least capable agent**
+
+- Each skill now has the same parts: how to follow it, a glossary of every
+  term that could be misread, numbered steps with **Do**, **Check** and
+  **If not**, exact commands, "first rule that matches" tables instead of
+  judgement calls, exact output templates, a yes/no checklist before sending,
+  and a table of common mistakes.
+- One rule everywhere for what cannot be checked: never guess, mark it, carry
+  on, and report it.
+- One question format for every agent, not only Claude Code, with what to do
+  when the owner is away.
+- `project-flow`: four statuses (Done, Not done, Not needed, Unconfirmed)
+  with a rule for each step, the exact commands to find the release, and a
+  fixed report.
+- `write-issue`: a table separating owner questions from technical calls;
+  copy and target numbers always come from the owner.
+- `write-handoff`: an eleven-point search for what a "fully decided" issue
+  leaves open; a full handoff template with the parts the builder copies word
+  for word; READY only with no marker left.
+- `audit-pr`: three modes (fix, report-only, follow-up), a checklist A–L,
+  a severity order, a definition of "small", known problems with their usual
+  fixes, and exact scratch-copy and push commands.
+- `project-context`: the eight questions to ask, the exact `AGENTS.md`,
+  constraints and decision-record templates, ready-made hooks, a CI job and
+  agent settings, and a Refresh procedure.
+- Tested with Claude Haiku over three rounds, on the original and on new
+  scenarios.
+
 ## 0.3.0 — 2026-10-14
 
 **Skills, after testing each one with fresh agents on realistic tasks**
