@@ -2,9 +2,6 @@
 
 > **Claude Code:** `/go-dark:project-flow` · **Other agents:** the `go-dark-project-flow` skill — ask for it by what you want, or by name.
 
-Tells you where a piece of work stands in [the flow](../the-flow.md), what
-comes next, and whether it is really finished.
-
 ## When it runs
 
 - You type `/go-dark:project-flow`, optionally with an issue or pull request:
@@ -14,45 +11,76 @@ comes next, and whether it is really finished.
 
 ## What it does
 
-1. Reads the project's own rules first (`AGENTS.md` or `CLAUDE.md`, contributing and release
-   guides). Where the project defines a step differently, the project wins.
-2. Gathers the facts — it does not assume:
-   - the issue's state, its Decided section, and its linked pull requests;
-   - which pull requests merged (`gh pr list --search "#12" --state all`);
-   - the plan's progress table and unticked boxes;
-   - any decision record's status;
-   - **whether the release branch contains the work**:
-     `git merge-base --is-ancestor <merge-commit> origin/<release-branch>`.
-3. Compares the merged pull requests with the plan's phases, and says so if
-   they don't match.
-4. Classifies every step as done, not done, or **unconfirmed** (one it could
-   not check). Unconfirmed steps are reported with what would confirm them,
-   and don't block the steps after.
-5. Reports the first step not done, then every remaining step in order with
-   what is left and **who owns it** (the owner, unless the plan names someone),
-   then the unconfirmed steps, and which project rules it read.
+It checks nine steps of [the flow](../the-flow.md), gives each one a status,
+and sends a report in a fixed format. The nine steps are: 1 Issue, 2 Decide,
+3 Handoff, 4 Build, 5 Audit, 6 Merge, 7 Verify on staging, 8 Release, 9 Close
+out. Work is finished only when real users have it and the records say so.
+Merged code is step 6, not the end.
 
-Without a release rhythm in the project, it flags a release branch more than
-two weeks or ten merged pull requests behind.
+Every step gets one of four statuses:
 
-## Example report
+- **Done** — it saw evidence that the step is complete.
+- **Not done** — it looked and the evidence shows the step is false or missing.
+- **Not needed** — the step does not apply (only a handoff can be not needed).
+- **Unconfirmed** — it could not look, for example no access or a failed
+  command. Looking and finding nothing is Not done, not Unconfirmed.
 
-> **#12 is built but not finished: step 8, Release.**
-> Both pull requests merged (#40, #44), and staging was checked on a phone.
-> Production does not have it yet: it is 31 commits behind the default branch.
-> Left: the owner releases; then step 9 — tick plan 0012's Phase 3 and close
-> #12.
+The steps of the skill itself:
 
-## What "finished" means
+1. **Find the project's facts** — the project's rule files, the owner, the
+   default branch, and how the project releases (a release branch, tags, or
+   deploying the default branch). Where the project defines something
+   differently, the project wins and the report says so.
+2. **Collect what the records say about the issue** — the issue and its
+   comments, its pull requests, and the plan, decision records and handoff that
+   mention it.
+3. **Give each of the nine steps a status** — by a fixed rule for each step.
+   For example, Release is checked by whether the last merged pull request's
+   commit is in the release branch or a tag. Audit is never marked Not done,
+   because audits are often given in chat; it is Unconfirmed if none is
+   written on GitHub.
+4. **Look for warnings** — the plan and merged pull requests do not match; no
+   pull request has a closing keyword, so the issue will not close itself; the
+   release is behind (more than 14 days or more than 10 commits, unless the
+   project sets its own rhythm); or the work reached users with an earlier step
+   not done.
+5. **Decide the verdict** — "Yes, finished", "No, the first step not done is
+   step N", or "I cannot confirm". An Unconfirmed step is never the first step
+   not done.
+6. **Write the report** — in the fixed template.
 
-Finished is step 9 done: users have the feature, and every record says so.
-Merged code is step 6. The skill will not call work finished at step 6.
+It only reads. It does not create, edit, close, merge or comment on anything.
 
-## Common mistakes it prevents
+## What you get
 
-| Mistake | What the skill does |
-|---|---|
-| Closing an issue when its code merges | Checks the release branch contains the work first |
-| A plan that still says "Not started" after the work shipped | Lists the boxes and statuses to update in step 9 |
-| A follow-up mentioned in a review and then forgotten | Asks for it to be filed as an issue |
-| Two contributors taking the same plan or migration number | Asks for numbers to be claimed in step 2 |
+A report that starts with the verdict, then lists every step still to do,
+lowest number first, with the exact action and who owns it. That is the owner,
+unless the plan names someone. It then lists the steps it could not check and
+what would confirm each, the steps already done or not needed, any warnings,
+and what it read. Where the next step has a skill (write-issue, write-handoff
+or audit-pr), it names it. For example:
+
+```
+**Is #12 finished?** No. #12 is not finished. The first step not done is step 7 (Verify on staging).
+
+| Step | Status | What is left | Who does it |
+|---|---|---|---|
+| 7. Verify on staging | Not done | Check the cover photo on staging on a real phone, then comment what you checked on #12 | the owner |
+| 8. Release | Not done | Release the default branch | the owner |
+```
+
+## What it never does
+
+- Never invents a fact. Every name, number, date and result comes from
+  something it read or ran. Anything it could not check is written as
+  `[NOT CHECKED: …]` and appears in the report.
+- Never changes anything: no comment, close, merge, edit or ticked box.
+- Never calls work finished because the pull requests merged.
+- Never marks a step Not done because it could not open something. That is
+  Unconfirmed.
+- Never assumes the issue will close itself. Only a merged pull request with a
+  closing keyword does that.
+
+## Exact templates and wording
+
+Every template, command and checklist is in [the skill itself](../../plugins/go-dark/skills/project-flow/SKILL.md).

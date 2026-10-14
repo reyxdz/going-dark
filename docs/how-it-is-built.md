@@ -143,7 +143,7 @@ checked on 2026-10-14:
 |---|---|---|
 | Skill names and descriptions | Every session | ~360 tokens |
 | Standing rules | Every session | ~450 tokens |
-| One skill's body | Only when it runs | 0.8k–1.3k tokens |
+| One skill's body | Only when it runs | 4k–6k tokens |
 
 ## Writing a skill description
 
@@ -161,6 +161,38 @@ description: Use when asked to audit, review or check a pull request, or whether
 # Bad — a summary an agent may follow instead of reading the skill
 description: Merges main, reads the diff, fixes problems and reports a verdict.
 ```
+
+## Writing a skill body
+
+The skills are written for the **least capable agent** that might run them,
+not the most capable. A strong model loses nothing from precise steps; a
+weak one fails on every judgement word left undefined. Every skill has the
+same parts, in this order:
+
+1. **What this skill is for** — two or three sentences.
+2. **How to follow this file** — the same rules in every skill: do the steps
+   in order; each step has **Do**, **Check** and **If not**; **STOP** means
+   send the given message and wait; never invent a fact; what to write when
+   something cannot be checked; the project's own rules win.
+3. **Words used in this file** — every term a weak agent could misread
+   ("owner", "small", "unsafe", "scratch folder"), defined once.
+4. **Numbered steps** — exact commands with placeholders in `<angle
+   brackets>`, and decisions written as "use the first rule that matches"
+   tables, never "use your judgement".
+5. **Templates** — the exact shape of every output: the report, the issue,
+   the handoff, the files.
+6. **Before you send** — a yes/no checklist.
+7. **Common mistakes** — each with what to do instead.
+
+Each skill is one self-contained `SKILL.md`: the installer copies only that
+file, and a weak agent may not open a second one.
+
+**How they are tested.** Each skill is run by a small model (Claude Haiku)
+on a realistic scenario, with instructions to log every point where it had
+to guess. The guesses are the defects: each becomes a definition, a rule or
+a template line, and the scenario is run again. New scenarios then check the
+skill generalises — including a pull request with nothing wrong, which must
+be called safe without invented findings.
 
 ## Releasing a change
 

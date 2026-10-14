@@ -2,9 +2,6 @@
 
 > **Claude Code:** `/go-dark:write-issue` · **Other agents:** the `go-dark-write-issue` skill — ask for it by what you want, or by name.
 
-Writes an issue as a **specification**: someone who never saw the conversation
-can plan or build from it without guessing.
-
 ## When it runs
 
 - `/go-dark:write-issue`, after describing what you want.
@@ -14,108 +11,77 @@ can plan or build from it without guessing.
 
 ## What it does
 
-1. **Reads the project**: `AGENTS.md` or `CLAUDE.md`, its constraints and decision records,
-   its issue templates, and two or three recent issues — to match labels and
-   voice.
-2. **Collects facts from the code**, not memory: the file and line of a bug,
-   real numbers (sizes, timings, counts), the decision records that apply.
-3. **Asks you only what changes the product, its cost or its risk** — scope,
-   limits, what users see — two to four options each, recommended option
-   first. Technical details it decides itself, and records under Decided
-   marked *(technical call)*. Where the project has no context files, it asks
-   or marks its assumptions *(unverified)*.
-4. **Drafts the issue** in the order below.
-5. **Shows you the draft and asks before creating it**: creating an issue is
-   outward-facing.
-6. Creates it with `gh issue create --title … --body-file … --label …`.
+An issue is a **specification**: someone who never saw the conversation can
+plan and build from it without guessing. The problem is concrete, every
+decision says who made it and when, scope is written down, and "done" can be
+measured.
 
-## The standard
+1. **Read the project** — the project's rule files, issue templates, the three
+   most recent issues (to copy their style), the labels that exist, and the
+   decision records. It finds the owner. Where the project's rules differ from
+   the skill, the project wins and it says so.
+2. **Decide what kind of issue it is** — a bug, a feature or a technical issue
+   (speed, size, cost, security, cleanup). It picks one.
+3. **Collect the facts** — the exact file and line from the code, every number
+   you gave with its unit and where it was measured, the decision records for
+   the area, and the project's real limits (devices, data, hosting, money, law).
+   A fact it cannot check is marked `*(unverified: why)*`.
+4. **Sort every open point into two lists** — **owner questions** are anything
+   that changes what users get, what it costs or the risk: scope, public URLs,
+   limits users notice, numbers in Verify, all copy, failure and empty states,
+   money, security, privacy, and anything expensive to undo. **Technical calls**
+   are how it is built: libraries, names, internal formats, tests. If unsure,
+   it is an owner question.
+5. **Ask the owner** — at most four questions per message, each with two to
+   four options and the recommended one first. It waits for the answer. An
+   unanswered question goes in **Decide first**, unticked. It never records its
+   own recommendation as the owner's decision.
+6. **Write the draft** — from the template, in a fixed order. The required
+   sections are Summary, What to build, Verify, Not in this ticket and How to
+   ship, plus Decided once anything is decided. Why it happens, Decide first,
+   Docs and Notes appear only when they apply.
+7. **Check the draft** — a yes/no checklist, fixed until every answer is yes.
+   Among other things: every rule says what the server does, not only the
+   browser; every failure and empty state has exact copy; every date is
+   absolute; records are named by number.
+8. **Show the draft and ask to file it** — it sends the full draft and the
+   labels it will use, then waits. Only a clear yes ("file it", "go ahead")
+   counts.
+9. **File it** — with `gh issue create`, using only labels that exist, then
+   sends you the link.
 
-### Title
+To **check an existing issue** ("is #12 ready?"), it reads the project, then
+answers the same yes/no checklist about that issue and reports each "no" with
+what to add. It does not edit the issue unless you ask.
 
-A plain sentence naming the **outcome** and its **key constraint**.
+## What you get
 
-| Kind | Good | Not |
-|---|---|---|
-| Feature | Let people attach photos, audio, video and documents in messages, with a size limit per media type | Attachments |
-| Bug | The landing page search does nothing — make search work | Search broken |
-| Technical | Load a lazy page's text with the page, not on every first visit | Refactor i18n |
+One GitHub issue whose title names the outcome and its key limit. The body
+holds the sections above. Technical calls sit in Decided marked
+*(technical call)*, and each out-of-scope item names its issue number or says
+"no issue yet", with an offer to file it. Title patterns:
 
-### Body sections, in order
-
-Use the ones that apply; never leave one empty.
-
-| # | Section | Holds |
-|---|---|---|
-| 1 | **Summary** | The real problem: who tries what, what happens, why it matters. A bug names the file and line; a technical issue gives numbers |
-| 2 | **Why it happens** | Technical issues only: the root cause, citing the decision record behind it |
-| 3 | **What to build** | Checkboxes grouped by layer (Data, Enforcement, UI, Housekeeping); each concrete and testable; specifications as tables; rejected options with their reason |
-| 4 | **Decided (name, YYYY-MM-DD)** | Every answered question, ticked, with its answer — the name is the owner as the project knows them. **Decide first** (unticked) exists only for questions the owner deferred |
-| 5 | **Verify / Done when** | Measurable acceptance: exact numbers, exact behaviour, named tests, a check on staging |
-| 6 | **Not in this ticket** | What is out of scope, and which issue covers it — or "no issue yet", with an offer to file one |
-| 7 | **Docs** | Which reference documents must change |
-| 8 | **Notes** | Where it came from ("raised in #41's audit"), timing |
-| 9 | **How to ship** | A pull request into the default branch through its template, checks passing, link to the guide |
-
-### What every issue respects
-
-- **The project's real limits**, named and linked: users' devices and data
-  costs, hosting memory, privacy law, schedulers that run late.
-- **Rules enforced by the server and storage**, never only the browser.
-- **Failure designed for**: "decided when the file is read, whatever any job
-  has done"; a designed empty state, never a bare "no results".
-- **Exact copy** for anything people will read: "This video expired on 12 Nov
-  2026", not "show an expiry message".
-- **Absolute dates**, and decision records, guides and issues **linked by
-  number**.
-
-## Template
-
-```markdown
-## Summary
-
-<Who tries to do what, what happens instead, and why it matters. For a bug:
-the file and line. For a technical issue: the numbers.>
-
-## What to build
-
-**Data.**
-- [ ] <table / column / migration, additive>
-
-**Enforcement: server and storage, not the browser.**
-- [ ] <the check, and the error it returns>
-
-**UI.**
-- [ ] <the screen, the states, the exact copy>
-
-| <Spec> | <Value> | <Why> |
-|---|---|---|
-
-## Decide first
-
-- [ ] <Question only the owner can answer> — options: <A> / <B>
-
-## Verify
-
-- [ ] Tests: <named cases, including the unhappy paths>
-- [ ] On staging: <what someone does, and what they see>
-
-## Not in this ticket
-
-<Out of scope> — that is #<n>.
-
-## Docs
-
-<Reference documents to update.>
-
-## How to ship
-
-Through a pull request into `main`, using the template, with its checks
-passing. See <link to the contributing guide>.
+```
+Feature:   Let <who> <do what>, <key limit>
+Bug:       <The symptom> — <the fix>
+Technical: <Make what> <better how>, <for whom or why>
 ```
 
-## Checking an existing issue
+For example, a bug title: "The landing page search does nothing — make search
+work".
 
-Asked "is #12 ready?", it reports against each section: what is missing, which
-questions are still open, and whether "done" is measurable. It does not edit
-the issue unless you ask.
+## What it never does
+
+- Never invents a fact, a number or a file path. A fact it could not check is
+  marked `*(unverified: …)*`.
+- Never files the issue on GitHub until you have seen the full draft and said
+  yes.
+- Never decides an owner question itself, and never writes its recommended
+  option as your answer.
+- Never invents a label. It uses only those from `gh label list`.
+- Never saves the issue body inside the repository. It uses a scratch folder
+  and deletes the file afterwards.
+
+## Exact templates and wording
+
+Every template, command and checklist is in [the skill itself](../../plugins/go-dark/skills/write-issue/SKILL.md).

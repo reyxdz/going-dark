@@ -2,9 +2,6 @@
 
 > **Claude Code:** `/go-dark:project-context` · **Other agents:** the `go-dark-project-context` skill — ask for it by what you want, or by name.
 
-Sets up — or refreshes — everything an agent must **know**, **understand** and
-**never do** in a project, so every session starts from the same ground.
-
 ## When it runs
 
 - `/go-dark:project-context` in a project for the first time.
@@ -12,99 +9,101 @@ Sets up — or refreshes — everything an agent must **know**, **understand** a
 - "Set this project up for agents", "what are the do's and don'ts here?",
   "refresh the project rules".
 
-## The three layers
+## What it does
 
-| Layer | Holds | Lives in |
-|---|---|---|
-| **Know** | What to read first; the do's and don'ts, each with its reason; one real file to imitate per kind of work | `AGENTS.md` at the repository root, which most agents read at the start of every session; for Claude Code, a `CLAUDE.md` whose only line is `@AGENTS.md` |
-| **Why** | The realities that make general instinct wrong here; the decisions already made; how work is done | `docs/` — constraints, decision records, plans, guides |
-| **Never** | Rules too important to depend on being remembered | Git hooks, CI checks, `.claude/settings.json` hooks and permissions |
+An agent knows a project through three layers, and this skill sets up all
+three. **Know** is `AGENTS.md`, which most agents read at the start of every
+session. **Why** is `docs/explanation/constraints.md` and `docs/decisions/`.
+**Never** is git hooks, a CI check, a pull request template and the agents' own
+settings.
 
-Each layer points to the next instead of copying it, so `AGENTS.md` stays short
-enough to read every time.
+If `AGENTS.md`, `CLAUDE.md` and `GEMINI.md` are all missing, it runs the setup
+steps. If one exists, it runs Refresh instead.
 
-## Setting a project up
+### Setting a project up
 
-1. **Read the repository**, without running anything heavy: the README,
-   package files and scripts, CI workflows, existing docs, the last 30
-   commits, open issues and pull requests.
-2. **Ask what the code cannot show**: who decides and who merges; the
-   real-world limits (users, devices, budget, hosting, law); what must never
-   happen; where staging and production live; **which AI agents the team
-   uses**; and **which don'ts to enforce**. If you are away, it drafts every
-   file with `[OWNER: question]` placeholders and commits nothing.
-3. **Write `AGENTS.md`** (template below) — plus, if anyone uses Claude Code,
-   a `CLAUDE.md` whose only line is `@AGENTS.md`. A project that already has a
-   full `CLAUDE.md` extends that instead.
-4. **Write `docs/explanation/constraints.md`**: the few realities that look
-   wrong by general instinct and are right here (template below).
-5. **Start a decision log** — `docs/decisions/`, numbered, with an index — if
-   there is none, and record the choices that would be expensive to reverse.
-6. **Enforce the don'ts you chose**: a git hook plus how a fresh clone
-   switches it on (`git config core.hooksPath .githooks`), and a CI job running
-   the same check, since a fresh clone has no hooks; a pull request template;
-   and the agents' own settings where they support them (deny force-pushes
-   and reading `.env` files).
-7. **Show you every file before committing**, and land them through the
-   project's normal pull request flow.
+1. **Read the repository** — files, the last 30 commits, recent issues and
+   pull requests, the README, package file, CI workflows and docs. It records
+   the language, scripts, what CI runs, the default branch and the project's
+   name. It runs nothing heavy: no installs, builds, servers or Docker.
+2. **Pick one imitate file per kind of work** — one real file for each of
+   route, table, component, page, data code and test, checked with
+   `git ls-files`.
+3. **Find the exact commands that check work** — typecheck, lint, all tests
+   and one test file, taken only from the scripts and CI.
+4. **Ask the owner** — eight questions in two rounds. Round one: who merges
+   (Q1), which AI agents the team uses (Q2), which rules a check should
+   enforce (Q3), and where staging and production run (Q4). Round two, in the
+   owner's own words: who uses the product (Q5), what limits the code must
+   respect (Q6), what must never happen (Q7), and what the project is (Q8).
+   It waits for the answers. An unanswered question becomes
+   `[OWNER: <the question>]`. It never treats its own recommended option as the
+   owner's answer.
+5. **Write `AGENTS.md`** — under 120 lines, every rule with a one-line reason.
+   It holds a start-here list, the do's and don'ts, the imitate table, the
+   verify commands and where the project runs.
+6. **Write the pointer files** — if the team uses Claude Code, a `CLAUDE.md`
+   containing only `@AGENTS.md`; the same for Gemini CLI. An existing
+   `CLAUDE.md` has its content moved into `AGENTS.md` first, and the owner is
+   told. Codex, Copilot and Cursor read `AGENTS.md` directly.
+7. **Write `docs/explanation/constraints.md`** — one section per real limit
+   from Q5 to Q7, each stating the reality, the rule it leads to, what people
+   would normally do instead, and who confirmed it.
+8. **Start the decision log** — `docs/decisions/` with an index and a first
+   record that agent instructions live in `AGENTS.md`. Skipped if a log
+   already exists.
+9. **Enforce the don'ts the owner chose** — skipped if the owner chose none.
+   Otherwise:
+   - a git hook for each chosen rule (`commit-msg` for AI attribution,
+     `pre-commit` for `.env` files);
+   - a way to switch the hooks on in every clone (a `prepare` script, or a
+     line in the README);
+   - a CI workflow running the same checks, since a fresh clone has no hooks;
+   - a pull request template, if there is none;
+   - for Claude Code, `.claude/settings.json` denying force-pushes and
+     reading `.env` files.
+10. **Show the owner every file** — it sends the full content and waits for a
+    yes. It also gives the two GitHub settings only the owner can change: block
+    force-pushes to the default branch, and require the `agent-rules` check.
+11. **Land it as one pull request** — a fresh branch `docs/agent-context`
+    from the default branch, only the files shown to the owner, and the link
+    sent back. It does not merge.
 
-## Refreshing a project
+### Refreshing a project
 
-It compares each claim in `AGENTS.md` (or `CLAUDE.md`) and the constraints with the code and the
-recent history, reports what is stale, missing or contradicted, and fixes it in
-one pull request. Anything the repository should not hold — personal
-preferences, dashboard paths — goes to the agent's memory instead.
+Refresh reads the repository again (steps 1 to 3), then marks every claim in
+the existing files and the constraints as **Correct**, **Stale**,
+**Contradicted** or **Missing**. It sends the owner a table of claim, status,
+evidence and proposed fix, and waits. With a yes, it lands the fixes as one
+pull request on `docs/refresh-agent-context`. Personal preferences and
+dashboard paths go to the agent's own memory, not to the repository.
 
-## `AGENTS.md` template
+## What you get
 
-```markdown
-# Working in this repository
+Up to these files, shown to you before anything is committed:
 
-## Start here — what to load before you work
+- `AGENTS.md`, and a `CLAUDE.md` or `GEMINI.md` that holds only the line
+  `@AGENTS.md`;
+- `docs/explanation/constraints.md` and a numbered decision log;
+- the hooks, the `agent-rules` CI workflow, a pull request template and
+  `.claude/settings.json`, for the rules you chose to enforce;
+- one pull request, once you say yes.
 
-Do not load the whole `docs/` tree. More context is not better context.
+Anything it could not confirm stays in the files as `[OWNER: <question>]`, and
+the message lists each one under "Still open".
 
-### Always
-1. This file.
-2. `docs/explanation/constraints.md` — why some decisions here look wrong by
-   general instinct and are right.
-3. Your plan or issue.
+## What it never does
 
-### Then, by what you are touching
-- **Backend:** <guide links>
-- **Frontend:** <design system link>
+- Never invents a fact about the project. Every command, path and limit comes
+  from the repository, a command it ran, or the owner.
+- Never commits, pushes or opens a pull request before you have seen every file
+  and said yes. If any `[OWNER: …]` is left, or you are away, it commits
+  nothing.
+- Never merges the pull request, and never adds AI attribution to a commit.
+- Never puts personal instructions, another client's project, or secrets of any
+  kind into the repository.
+- Never runs installs, builds, servers, Docker or browsers.
 
-### Copy an existing file's shape
-| Writing | Imitate |
-|---|---|
-| A route | `<path>` |
-| A table | `<path>` |
-| A component | `<path>` |
+## Exact templates and wording
 
-## Rules
-
-**<Rule>.** <One-line reason.>
-**Never commit a secret.** <Where secrets live instead.>
-**Verify before reporting done.** Run `<typecheck>`, `<lint>`, `<test>`.
-**Release only when <owner> asks**, by `<release guide>`.
-```
-
-## Constraints template
-
-```markdown
-# Constraints
-
-The realities this project is built for. Several decisions follow from them
-that look wrong by general instinct — and are right here.
-
-## 1. <Reality, stated as a fact>
-
-<The evidence: numbers, users, hardware, law, budget.>
-
-**So:** <the decisions it forces, and the instinct it overrides.>
-```
-
-## What never goes into the repository
-
-Personal instruction files, private policies, and anything naming another
-client's project. Those belong in the user's own configuration.
+Every template, command and checklist is in [the skill itself](../../plugins/go-dark/skills/project-context/SKILL.md).

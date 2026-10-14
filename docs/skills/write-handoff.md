@@ -2,121 +2,108 @@
 
 > **Claude Code:** `/go-dark:write-handoff` · **Other agents:** the `go-dark-write-handoff` skill — ask for it by what you want, or by name.
 
-Writes a **handoff prompt**: a document that lets an agent or contributor with
-no memory of the conversation carry out an issue exactly as decided — and stop
-instead of guessing. It is written for the least capable reader.
-
 ## When it runs
 
 - `/go-dark:write-handoff #12`.
 - "Write a handoff for this issue", "brief an agent to do #12", "write it so
   even the dumbest agent can't get it wrong".
 
-## Before it writes a word
+## What it does
 
-| Check | If it fails |
-|---|---|
-| The issue meets the [issue standard](./write-issue.md) | Fix the issue first |
-| Every open question on it is decided | Ask the owner (next row) |
-| Any decision record it needs is Accepted, and its plan is Ready | Finish step 2 of [the flow](../the-flow.md) |
+A **handoff** lets a builder with no memory of the conversation carry out an
+issue exactly as decided. It is written for the least capable reader: every
+fact is checked against the code, every decision is final, every step has an
+action and a check, and every doubt says "stop and ask". If that standard
+cannot be met yet, it writes a **blocked draft** instead. It writes the
+handoff only. It does not build the issue, commit, push or open pull requests.
 
-1. **Find what is still open — even in an issue called "fully decided".**
-   Behaviour at and over each limit, formats, security (injection, access,
-   personal data), logging, error copy, and how many pull requests the work
-   should be. Each goes to the owner with two to four options, the recommended
-   one first, the trade-off in each. A handoff is never written on an
-   assumption.
-2. **Establish ground truth.** It reads the code the work touches on the
-   default branch and records the **commit hash**. It notes function names,
-   file paths, defaults, test patterns, how migrations run, and what an older
-   client still calls. Code is referred to by **searchable text**, never by
-   line number — line numbers drift.
-3. **Prove the verbatim parts.** Any code, config or SQL the reader must paste
-   exactly is compiled or run in a scratch copy first, then the scratch copy is
-   deleted. Pull request descriptions given verbatim are run through the
-   project's own PR check.
+1. **Read the project and the issue** — the project's rule files, the owner,
+   the base commit (the default branch's 40-character hash), the pull request
+   check, the issue, and the plan, decision records and handoffs that mention
+   it. Where the project's rules differ from the skill, the project wins and the
+   owner is told.
+2. **Check the issue is ready** — it has Summary, What to build, Verify and
+   Not in this ticket sections; every "Decide first" box is ticked; every
+   decision record is Accepted; and a Ready plan exists if there is more than
+   one pull request. If not, it stops and asks whether to write a blocked draft
+   or wait. It points to `/go-dark:write-issue` or `/go-dark:project-flow`.
+3. **Find what is still open** — even in an issue called "fully decided". It
+   goes through eleven areas: each limit (at it and one over it), empty cases,
+   formats, who can do it, injection, abuse, personal data, record keeping,
+   errors, old clients, and the size of the work. Each open point is an
+   **owner question** (it changes what users get, cost, risk, security,
+   privacy or copy) or a **technical call** (it changes only how it is built;
+   it decides these and marks them). If unsure, it is an owner question. The
+   number of pull requests is always an owner question.
+4. **Ask the owner** — numbered Q1, Q2 and so on, with two to four options
+   and the recommended one first, at most four per message. It waits. It never
+   writes its recommended option as the owner's answer.
+5. **Collect the ground truth** — it reads the code on the default branch and
+   records each fact with a file path, a search text and the value. Never a
+   line number.
+6. **Prove the verbatim parts** — code, SQL, config, file contents and pull
+   request descriptions the builder must paste are checked in a scratch copy
+   with the narrowest check, then the copy is removed.
+7. **Write the handoff** — from the template, in a fixed order. Every step
+   inside has one **Action** and one **Check**.
+8. **Check the handoff** — a yes/no checklist, fixed until every answer is
+   yes.
+9. **Save it** — see below.
+10. **Tell the owner** — whether it is ready or blocked, where it is, and
+    every question still open.
 
-## When it cannot be finished yet
+Markers, used wherever something is unchecked. Any marker makes it a blocked
+draft:
 
-If the code cannot be read, a verbatim part cannot be proven, or the owner has
-not answered, it does not hand over something that only looks ready. It writes
-a **draft**:
+- `[VERIFY: what to check]` — a fact it could not read in the code.
+- `[OPEN Qn]` — a decision the owner has not answered.
+- `[UNPROVEN]` — a verbatim part it could not run or check.
 
-- headed `STATUS: DRAFT — BLOCKED. Do not execute.`;
-- every unchecked fact marked `[VERIFY: what to check]`, every unanswered
-  question `[OPEN Qn]`, every unproven verbatim part `[UNPROVEN]`;
-- with the list of what unblocks it.
+## What you get
 
-A draft is never saved as Ready; in the index its status is **Draft**.
+One document, with a STATUS line:
 
-## The document
+- `STATUS: READY.` only when there is no marker anywhere in it.
+- `STATUS: DRAFT — BLOCKED. Do not execute.` otherwise, with a closing section
+  that lists what unblocks it.
 
-Sections in this order. Every numbered step inside has an **Action** and a
-**Check**, and the rule: *if a check does not match, stop and fix it before
-going on.*
-
-| # | Section | Holds |
-|---|---|---|
-| 0 | The pull requests, and when to stop | A table: number, branch, title, contents. "After opening each one, stop until the owner says it is merged." Every branch from the freshest default branch |
-| 1 | What you are building | Plain words, for someone new to the project |
-| 2 | Decisions already made — final | Who decided; "do not change, do not ask"; exact numbers in tables |
-| 3 | Ground truth | The facts from the code, the commit hash, and "where this differs from the code, stop and ask" |
-| 4 | The design | The specification every step refers to |
-| 5 | Setup | What to read first; a scratch folder outside the repository; the minimal local processes allowed; a baseline that must pass before any change |
-| 6+ | One section per pull request | Numbered steps, each Action + Check |
-| — | Shipping | The same for every pull request: stale-value sweep, local checks, lockfile and private-file checks, commits with no AI attribution, the description through the PR check, push, watch CI, report |
-| — | Self-audit | Yes/no questions answered from the diff, not from memory |
-| — | When to stop and ask | Every condition where a guess could publish, delete or leak something |
-| — | Appendices | Exact file contents; exact PR descriptions; anything else to paste verbatim; the owner's own steps (billing, dashboards, rollout) with full click paths |
-
-## Rules written into every handoff
-
-- One pull request at a time; never branch from an unmerged branch.
-- Minimal local load: the project's own database only, tests on one worker,
-  stop whatever is started.
-- Secrets never printed, copied or committed; only staging for anything that
-  writes to hosted services.
-- No AI attribution, even if the reader's own instructions say otherwise.
-
-## Skeleton
+The sections run from "The pull requests, and when to stop" through what is
+being built, the decisions already made, the ground truth, the design, setup,
+one section per pull request, shipping, a self-audit and when to stop and ask.
+The appendices hold the pull request descriptions, exact file contents and the
+owner's own steps. It begins like this:
 
 ```markdown
-# Handoff: issue #<n> — <title>
+# Handoff: #12 — Export members as CSV
 
-You are implementing issue **#<n>** in <repository>. You will ship it as
-**<k> pull requests into `main`, one after another.** Read this whole document
-before running anything, then do the work in the order written. Every step has
-a Check; if a check does not match, stop and fix it before going on. If you
-cannot fix it, stop and ask (section <last>).
+STATUS: DRAFT — BLOCKED. Do not execute.
+Written for: whoever builds #12, with no memory of earlier conversations.
+Based on `main` at commit `<40-character hash>`, 2026-10-14.
 
 ## 0. The pull requests, and when to stop
-
-| # | Branch | Title | Contains |
-|---|---|---|---|
-| 1 | `feat/<x>` | <title> | <contents> |
-
-**After you open a pull request, stop** until you are told it is merged.
-
-## 1. What you are building
-## 2. Decisions already made (final: do not change, do not ask)
-## 3. Ground truth (checked against `main` at <commit>)
-## 4. The design
-## 5. Setup
-### Step 1.1: <name>
-- [ ] **Action.** <exactly what to do>
-- [ ] **Check.** <exactly what must be true>
-## <n>. Shipping a pull request
-## <n>. Self-audit
-## <n>. When to stop and ask
-# Appendices
 ```
 
-## Delivering it
+**Saved:** if `docs/handoffs/` exists, as
+`docs/handoffs/issue-<N>-<short-title>.md`, with an index row marked Draft or
+Ready. It is not committed. If the folder does not exist, it does not create
+it. It delivers the handoff in chat inside a code fence and asks whether to
+save it. In chat it opens with the line "Written for: an agent building #<N>."
 
-- **Saved** as `docs/handoffs/issue-<number>-<short-title>.md`, with a row in
-  that folder's README index (status *Draft*, *Ready*, later *Complete*).
-- **In chat**, when asked: it opens with one line naming the reader —
-  *"Written for: an agent implementing #123"* — and wraps the document in a
-  code fence longer than any fence inside it, so it copies cleanly.
-- **After each pull request** the reader reports back; run
-  [`/go-dark:audit-pr`](./audit-pr.md) on it before the owner merges.
+When the builder opens each pull request, audit it with
+[`/go-dark:audit-pr`](./audit-pr.md) before the owner merges.
+
+## What it never does
+
+- Never invents a fact. Every path, command, number and decision comes from
+  the issue, the owner or the code it read.
+- Never marks a handoff READY with a marker left in it.
+- Never builds the issue, commits, pushes or opens a pull request.
+- Never writes a line number as ground truth, or a check like "make sure it
+  works".
+- Never puts personal instruction files, secrets or AI attribution into the
+  work. Every handoff tells the builder to add no AI attribution, never to
+  force-push, and to stop after each pull request.
+
+## Exact templates and wording
+
+Every template, command and checklist is in [the skill itself](../../plugins/go-dark/skills/write-handoff/SKILL.md).
