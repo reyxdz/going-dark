@@ -4,6 +4,32 @@ Every release, newest first. Versions follow semantic versioning: a patch for
 wording, a minor version for a new skill, rule or agent, a major version for a
 change in how an existing skill or the installer behaves.
 
+## 0.5.1 — 2026-10-15
+
+**`project-context` never touches your own folder, and Refresh follows every
+wrong claim**
+
+Found by running the skill for real (in Cursor, on a live project) and
+auditing the pull request it opened.
+
+- Every file is written in a separate work copy (a git worktree on a new
+  branch). Your folder's branch and files are never changed, and the skill
+  checks at the end that they are exactly as they were. Before, landing the
+  change switched your folder to a new branch.
+- Refresh asks which AI agents the team uses, and checks each one reads a
+  file that holds the instructions — Codex, Copilot and Cursor read
+  `AGENTS.md`, not `CLAUDE.md`.
+- Refresh follows every stale or contradicted claim through the repository:
+  each file that repeats it gets its own row in the table you approve, and a
+  file with no approved row is never changed. It now also asks for a second
+  yes after showing the changes.
+- Enforcement reuses what the project already has — an existing hook, the
+  exact files an existing check rejects, an existing setup script — instead
+  of adding duplicates. The template `.env` hook now allows only
+  `.env.example`.
+- Sharper definitions of Stale, Contradicted and Missing, and one-file test
+  commands built from the project's own test script.
+
 ## 0.5.0 — 2026-10-15
 
 **`audit-pr` finds everything, down to a single typo**
