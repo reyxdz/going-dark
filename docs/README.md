@@ -22,6 +22,7 @@ can ask for what you want, or name the skill.
 | [Write an issue](./skills/write-issue.md) | `/go-dark:write-issue` | `go-dark-write-issue` | Issues as specifications, with a full template |
 | [Write a handoff](./skills/write-handoff.md) | `/go-dark:write-handoff` | `go-dark-write-handoff` | Handoff prompts any agent can follow, with a skeleton |
 | [Audit a pull request](./skills/audit-pr.md) | `/go-dark:audit-pr` | `go-dark-audit-pr` | The two verdicts, the checklist, the line-by-line pass, fixing, the report |
+| [Fix what an audit found](./skills/fix-audit.md) | `/go-dark:fix-audit` | `go-dark-fix-audit` | Applying a report exactly, questions, commits, the hand-back |
 | [Project context](./skills/project-context.md) | `/go-dark:project-context` | `go-dark-project-context` | `AGENTS.md`, constraints and enforced rules for a project |
 
 And when you want more:

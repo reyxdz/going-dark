@@ -71,7 +71,7 @@ names `AGENTS.md` — so its rules go into `GEMINI.md`.
 
 **What it changes, exactly:**
 
-1. **Skills** — five folders, `go-dark-audit-pr` … `go-dark-write-issue`, each
+1. **Skills** — six folders, `go-dark-audit-pr` … `go-dark-write-issue`, each
    with a `SKILL.md` and a `.going-dark` marker file. If a folder of that name
    already exists *without* the marker, it stops and changes nothing.
 2. **Rules** — one block in the rules file, between
@@ -88,13 +88,13 @@ Start a new session in your agent to pick the changes up.
 **Claude Code**
 
 1. `claude plugin list` shows `go-dark@going-dark`, **enabled**.
-2. `claude plugin details go-dark` lists **5 skills** and **1 hook**.
-3. In a new session, typing `/go-dark:` shows the five commands.
+2. `claude plugin details go-dark` lists **6 skills** and **1 hook**.
+3. In a new session, typing `/go-dark:` shows the six commands.
 
 **Other agents**
 
 1. The rules file you installed to contains the `going-dark:start` block.
-2. The skills folder contains the five `go-dark-*` folders.
+2. The skills folder contains the six `go-dark-*` folders.
 
 **Every agent:** ask *"Which going-dark standing rules are you following?"* It
 should list the seven rules from [Standing rules](./standing-rules.md). If it
@@ -140,7 +140,7 @@ used.
 | To | Run |
 |---|---|
 | Get the latest version | the same `install` command again — `npx` fetches the latest |
-| Stay on one version | add the release tag: `npx github:reyxdz/going-dark#v0.5.1 install --agent <agent>` |
+| Stay on one version | add the release tag: `npx github:reyxdz/going-dark#v0.6.0 install --agent <agent>` |
 | Remove it | `npx github:reyxdz/going-dark uninstall --agent <agent> [--scope …]` |
 
 `uninstall` removes exactly what `install` added: the marked skill folders, the

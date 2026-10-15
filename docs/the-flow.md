@@ -68,7 +68,10 @@ conversation can skip this step.
 
 The pull request is audited to the bar "perfectly safe to merge while keeping
 its purpose", and anything needing attention is fixed on its branch — see
-[Audit a pull request](./skills/audit-pr.md).
+[Audit a pull request](./skills/audit-pr.md). When the audit only reports, a
+second agent applies its fixes exactly as written — see
+[Fix what an audit found](./skills/fix-audit.md) — and a fresh audit then
+gives the verdict.
 
 **Exit:** the audit finds it safe, and its checks are green.
 

@@ -9,6 +9,7 @@ project, from the issue to the release.
 | `/go-dark:write-issue` | Write an issue as a specification, or check one is ready to build from |
 | `/go-dark:write-handoff` | Write a handoff prompt another agent can carry out without guessing |
 | `/go-dark:audit-pr` | Audit a pull request line by line: "perfectly safe to merge", or every fix down to a single typo — and make those fixes |
+| `/go-dark:fix-audit` | Apply every fix an audit report lists, exactly as written, then hand back to a fresh audit |
 | `/go-dark:project-context` | Set up or refresh a project's `AGENTS.md`, constraints and enforced rules |
 
 Each skill also runs by itself when what you ask matches it.
