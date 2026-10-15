@@ -609,7 +609,9 @@ Mode: <Fix | Report-only | Follow-up>.
 
 Q1. <question?>
   A. <option> (recommended) — <what it means; its cost or risk>
+     Change: `<file>` — Now: `<current text>` → Change to: `<new text>` <or "Do: <exact action>", or "no change">
   B. <option> — <what it means; its cost or risk>
+     Change: <the same, for this option>
 
 ### What I checked
 
@@ -661,6 +663,11 @@ Rules for the report:
 - **What I found and fixed** lists every finding you fixed (Fix and Follow-up
   mode). Leave it out in Report-only mode.
 - Leave out "Questions only you can answer" if there are none.
+- Every option of every question gives its exact **Change** — the file, the
+  current text and the new text, or the exact action, or "no change" — so
+  whoever applies the answer never has to guess where it goes.
+- In Report-only mode, end the report with: `To apply these fixes: run
+  /go-dark:fix-audit <N>.`
 - **What I checked** has one row for every letter A to N.
 - The line number in every finding comes from the `git grep -n` in Step 7.
 - **If you found nothing at all**: the verdict is `PERFECTLY SAFE to merge into
