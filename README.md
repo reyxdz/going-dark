@@ -53,7 +53,7 @@ npx github:reyxdz/going-dark uninstall --agent codex
 npx github:reyxdz/going-dark agents
 ```
 
-To stay on one release, add its tag — `npx github:reyxdz/going-dark#v0.4.0 …`.
+To stay on one release, add its tag — `npx github:reyxdz/going-dark#v0.5.0 …`.
 Every release is listed in the [changelog](CHANGELOG.md).
 
 ## Skills
@@ -63,7 +63,7 @@ Every release is listed in the [changelog](CHANGELOG.md).
 | project-flow | `/go-dark:project-flow` | See where a piece of work stands and what comes next, or whether it is really finished |
 | write-issue | `/go-dark:write-issue` | Write an issue as a specification, or check one is ready to build from |
 | write-handoff | `/go-dark:write-handoff` | Write a handoff prompt an agent can carry out without guessing |
-| audit-pr | `/go-dark:audit-pr` | Audit a pull request to "perfectly safe to merge", and fix what it finds |
+| audit-pr | `/go-dark:audit-pr` | Audit a pull request line by line: "perfectly safe to merge", or every fix down to a single typo — and make those fixes |
 | project-context | `/go-dark:project-context` | Set up or refresh a project's `AGENTS.md`, constraints, and the checks that enforce its rules |
 
 In every agent, the skill also triggers by itself when what you ask matches it.
