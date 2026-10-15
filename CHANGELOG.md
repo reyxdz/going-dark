@@ -4,6 +4,32 @@ Every release, newest first. Versions follow semantic versioning: a patch for
 wording, a minor version for a new skill, rule or agent, a major version for a
 change in how an existing skill or the installer behaves.
 
+## 0.7.0 — 2026-10-15
+
+**New skill: `/go-dark:fix`**
+
+- Fixes findings from anyone or anything — a developer, a tester, review
+  comments on a pull request, an issue, another skill or a tool. A report from
+  `/go-dark:audit-pr` goes to `/go-dark:fix-audit` instead.
+- Checks every finding against the code before changing anything. Each one
+  ends Confirmed, Not a problem (with the evidence), Needs the owner, or
+  Cannot check — a wrong finding is never "fixed" anyway.
+- Traces a bug from where it shows to every place one step does not fit the
+  next, proves it with a failing test, and fixes every copy of the same
+  mistake in the feature.
+- "Which one is right?" is settled by the specification — the issue, its
+  plan, decision records, the project's rules — or by the owner. Vague
+  findings, product decisions, new text for users and values nobody gave go
+  to the owner as questions, each option with its exact change.
+- Fixes only what was found: anything else it notices is listed, not changed.
+  Every behaviour fix gets a failing test first and its own commit, it works
+  in a scratch copy, and it points to a fresh audit before merging.
+- Tested with Claude Haiku in a practice repository on seven developer
+  findings, including a false one, a vague one and a product decision: it
+  found both causes of "the form never works", proved the false finding wrong
+  with the exact lines, asked before every decision, and changed nothing
+  else.
+
 ## 0.6.0 — 2026-10-15
 
 **New skill: `/go-dark:fix-audit`**
