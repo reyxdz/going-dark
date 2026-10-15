@@ -4,6 +4,33 @@ Every release, newest first. Versions follow semantic versioning: a patch for
 wording, a minor version for a new skill, rule or agent, a major version for a
 change in how an existing skill or the installer behaves.
 
+## 0.6.0 — 2026-10-15
+
+**New skill: `/go-dark:fix-audit`**
+
+- Applies every fix an `audit-pr` report lists, exactly as written: it finds
+  each line's current text before changing it, and an item it cannot find is
+  "Already fixed" or "Could not apply" — never a guess. Nothing the report
+  does not name is changed.
+- Asks the owner the report's questions, copied exactly; when an answer says
+  what but not where, it proposes one exact change and asks once more. It
+  never picks an answer for the owner.
+- Behaviour fixes get their failing test first and their own commit, named
+  for the audit item; text, tidy and test fixes share one commit. It works in
+  a scratch copy, pushes without force, and leaves the owner's folder as it
+  was.
+- It never calls its own work safe: it hands back to a fresh
+  `/go-dark:audit-pr` for the verdict.
+- Tested for real with Claude Haiku in a practice repository: all 25 items of
+  an audit report applied exactly, against a baseline that made one commit
+  and added fixes nobody asked for.
+
+**`audit-pr`**
+
+- Every option of every question in a report now states its exact change, so
+  the answer can be applied without guessing.
+- A report-only audit ends by pointing to `/go-dark:fix-audit`.
+
 ## 0.5.1 — 2026-10-15
 
 **`project-context` never touches your own folder, and Refresh follows every
