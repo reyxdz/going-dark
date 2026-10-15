@@ -7,13 +7,13 @@
    says disabled: `claude plugin enable go-dark@going-dark`.
 3. Check the scope. Installed with `--scope project` or `--scope local`, it
    appears only in that project.
-4. `claude plugin details go-dark` should list 6 skills.
+4. `claude plugin details go-dark` should list 7 skills.
 
 ## Other agents: the skills aren't used
 
 1. **Start a new session.** Agents read skills and rules when a session starts.
 2. Run `npx github:reyxdz/going-dark agents` and check the folder your agent
-   reads holds the six `go-dark-*` folders.
+   reads holds the seven `go-dark-*` folders.
 3. Check the rules file holds the `<!-- going-dark:start` block. That block
    lists every skill and its file, so even if your agent does not load skills
    natively, it can find them — ask it to *"use the go-dark-audit-pr skill"*.

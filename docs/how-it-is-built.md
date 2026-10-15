@@ -13,7 +13,7 @@ going-dark/
 │   │   └── plugin.json         Claude Code: name, version, description
 │   ├── rules.md                the standing rules
 │   ├── hooks/hooks.json        Claude Code: loads rules.md at session start
-│   └── skills/<skill>/SKILL.md the six skills, in the Agent Skills format
+│   └── skills/<skill>/SKILL.md the seven skills, in the Agent Skills format
 ├── bin/going-dark.mjs          the installer's command
 ├── src/
 │   ├── agents.mjs              where each agent reads skills and rules

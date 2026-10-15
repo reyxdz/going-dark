@@ -98,7 +98,8 @@ under `### Fixes needed`.
 - The report is in another shape (no `Now:` / `Change to:` / `Do:` on its
   items) → **STOP**. Send: `This report does not say exactly what to change,
   and I will not guess. Run /go-dark:audit-pr <N> again for a report in the
-  exact format.`
+  exact format — or ask me to use /go-dark:fix, which checks findings in any
+  form before fixing them.`
 
 ## Step 2 — Make the item list
 

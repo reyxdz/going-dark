@@ -35,4 +35,4 @@ which rule it overrode.
 The going-dark skills: `/go-dark:project-flow` (where a piece of work stands
 and what comes next), `/go-dark:write-issue`, `/go-dark:write-handoff`,
 `/go-dark:audit-pr`, `/go-dark:fix-audit` (apply an audit report's fixes),
-`/go-dark:project-context`.
+`/go-dark:fix` (check and fix any other findings), `/go-dark:project-context`.
