@@ -4,6 +4,33 @@ Every release, newest first. Versions follow semantic versioning: a patch for
 wording, a minor version for a new skill, rule or agent, a major version for a
 change in how an existing skill or the installer behaves.
 
+## 0.5.0 — 2026-10-15
+
+**`audit-pr` finds everything, down to a single typo**
+
+- Two verdicts only: **PERFECTLY SAFE to merge into `<branch>`**, or **NOT
+  SAFE TO MERGE YET — `<count>` fixes needed**, followed by every fix.
+  Nothing is "not worth holding" any more: a typo blocks "perfectly safe"
+  like any other fix.
+- A new step reads every changed line, the title, the description, every
+  commit message and every new file name word by word, against sixteen fixed
+  questions (spelling, repeated and confused words, spacing, capitalisation,
+  exact copy, grammar, the same number and name everywhere, references,
+  leftovers, unused code, whitespace). A coverage table proves no line was
+  skipped.
+- Every finding is proved before it is reported: found again with
+  `git grep -n` (which also gives its line number), tied to a named rule, and
+  given an exact fix. Preferences and hedges ("consider", "might") are
+  deleted, so a clean pull request is called clean.
+- Things the auditor could not check block the verdict unless CI or the
+  staging step covers them — and the auditor must try them itself first.
+- Each fix is reported with its severity, file and line, the exact current
+  text and the exact new text.
+- Commit-message typos are fixed at squash-merge, never by force-pushing.
+- Branches and uncommitted work can be audited the same way.
+- Tested with Claude Haiku on a pull request with 19 planted problems (all
+  found) and on a clean one (called perfectly safe, nothing invented).
+
 ## 0.4.0 — 2026-10-14
 
 **Every skill rewritten for the least capable agent**
